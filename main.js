@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import TWEEN from "three/examples/jsm/libs/tween.module.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 let camera, scene, renderer;
@@ -95,14 +96,28 @@ function onClick() {
   const intersects = raycaster.intersectObjects(scene.children);
 
   if (intersects.length > 0) {
-    console.log(intersects[0]);
-    console.log(scene);
-    particles.material.color = intersects[0].object.material.color;
+    const object = intersects[0].object;
+    const cameraPosition = new THREE.Vector3(
+      object.position.x,
+      object.position.y,
+      object.position.z
+    ).multiplyScalar(5);
+
+    new TWEEN.Tween(camera.position)
+      .to({ x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z })
+      .easing(TWEEN.Easing.Exponential.Out)
+      .start();
+
+    new TWEEN.Tween(particles.material.color)
+      .to({ color: object.material.color })
+      .easing(TWEEN.Easing.Exponential.Out)
+      .start();
   }
 }
 
 function animate() {
   window.requestAnimationFrame(animate);
   controls.update();
+  TWEEN.update();
   renderer.render(scene, camera);
 }

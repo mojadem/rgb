@@ -22,7 +22,7 @@ function init() {
 
   scene = new THREE.Scene();
 
-  renderer = new THREE.WebGLRenderer();
+  renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
@@ -109,7 +109,7 @@ function onClick() {
       .start();
 
     new TWEEN.Tween(particles.material.color)
-      .to({ color: object.material.color })
+      .to(object.material.color)
       .easing(TWEEN.Easing.Exponential.Out)
       .start();
   }

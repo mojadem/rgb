@@ -10,6 +10,7 @@ const planes = [];
 const outlines = [];
 let particles;
 
+let CURRENT_INDEX = 0;
 let INTERSECTED = null;
 let pageActive = false;
 
@@ -79,7 +80,7 @@ function createPlanes() {
     );
     plane.position.set(placement.x, placement.y, placement.z);
     plane.rotateY((-Math.PI / 3) * i);
-    plane.userData = { outlineIndex: i };
+    plane.userData.index = i;
     scene.add(plane);
     planes.push(plane);
 
@@ -98,7 +99,7 @@ function createParticles() {
   const particleGeometry = new THREE.BufferGeometry();
   const positions = [];
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 3000; i++) {
     const x = Math.random() * 200 - 100;
     const y = Math.random() * 200 - 100;
     const z = Math.random() * 200 - 100;
@@ -131,19 +132,24 @@ function onPointerMove(event) {
 
 function onClick() {
   if (INTERSECTED) {
-    const cameraPosition = new THREE.Vector3(
+    CURRENT_INDEX = INTERSECTED.userData.index;
+
+    const newCameraPosition = new THREE.Vector3(
       INTERSECTED.position.x,
       INTERSECTED.position.y,
       INTERSECTED.position.z
     ).multiplyScalar(5);
 
     new TWEEN.Tween(camera.position)
-      .to({ x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z })
-      .easing(TWEEN.Easing.Exponential.Out)
-      .start();
-
-    new TWEEN.Tween(particles.material.color)
-      .to(INTERSECTED.material.color)
+      .to({
+        x: newCameraPosition.x,
+        y: newCameraPosition.y,
+        z: newCameraPosition.z,
+      })
+      .onUpdate((object) => {
+        const extendedPosition = object.normalize().multiplyScalar(5);
+        camera.position.copy(extendedPosition);
+      })
       .easing(TWEEN.Easing.Exponential.Out)
       .start();
   }
@@ -153,12 +159,12 @@ function animate() {
   window.requestAnimationFrame(animate);
   controls.update();
   TWEEN.update();
-  updateRaycast();
+  updateIntersected();
   updateCursor();
   renderer.render(scene, camera);
 }
 
-function updateRaycast() {
+function updateIntersected() {
   if (!pageActive) {
     return;
   }
@@ -167,8 +173,13 @@ function updateRaycast() {
   const intersects = raycaster.intersectObjects(planes);
 
   const update = (value) => {
-    outlines[INTERSECTED.userData.outlineIndex].visible = value;
+    outlines[INTERSECTED.userData.index].visible = value;
     INTERSECTED.material.emissive.setHex(value ? 0x222222 : 0x000000);
+
+    new TWEEN.Tween(particles.material.color)
+      .to(value ? INTERSECTED.material.color : new THREE.Color(0xffffff))
+      .easing(TWEEN.Easing.Exponential.Out)
+      .start();
   };
 
   if (intersects.length > 0) {

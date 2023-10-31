@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import TWEEN from "three/examples/jsm/libs/tween.module.js";
-// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 let camera, scene, renderer;
 let raycaster, pointer;
@@ -35,7 +35,7 @@ function init() {
   raycaster = new THREE.Raycaster();
   pointer = new THREE.Vector2();
 
-  // controls = new OrbitControls(camera, renderer.domElement);
+  controls = new OrbitControls(camera, renderer.domElement);
 
   createLights();
   createPlanes();
@@ -173,7 +173,7 @@ function onClick() {
 
 function animate() {
   window.requestAnimationFrame(animate);
-  // controls.update();
+  controls.update();
   TWEEN.update();
   updateIntersected();
   updateCursor();

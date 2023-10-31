@@ -94,14 +94,14 @@ function initPlanes() {
         side: THREE.DoubleSide,
       })
     );
-    plane.position.set(placement.x, placement.y, placement.z);
+    plane.position.copy(placement);
     plane.rotateY((-Math.PI / 3) * i);
     plane.userData.index = i;
     scene.add(plane);
     planes.push(plane);
 
     const outline = new THREE.Line(outlineGeometry, outlineMaterial);
-    outline.position.set(placement.x, placement.y, placement.z);
+    outline.position.copy(placement);
     outline.rotateY((-Math.PI / 3) * i);
     outline.visible = false;
     scene.add(outline);
@@ -171,6 +171,13 @@ function initEventListeners() {
   controls.addEventListener("change", () => {
     if (camera.position.length() < 1 + near) {
       console.log("change");
+    } else if (camera.position.length() > cameraDistance) {
+      const clamped = new THREE.Vector3()
+        .copy(camera.position)
+        .normalize()
+        .multiplyScalar(cameraDistance);
+
+      camera.position.copy(clamped);
     }
   });
 }
@@ -184,13 +191,21 @@ function zoomInCamera() {
 
 function selectPlane() {
   if (INTERSECTED) {
+    let isNewSelected = true;
+    if (CURRENT === INTERSECTED) {
+      isNewSelected = false;
+    }
+
     CURRENT = INTERSECTED;
-    viewPlane();
+    viewPlane(isNewSelected);
   }
 }
 
-function viewPlane() {
-  const extendPosition = camera.position.clone().normalize().multiplyScalar(5);
+function viewPlane(isNewSelected) {
+  const extendPosition = new THREE.Vector3()
+    .copy(camera.position)
+    .normalize()
+    .multiplyScalar(5);
 
   const extend = new TWEEN.Tween(camera.position).to(
     {
@@ -213,15 +228,26 @@ function viewPlane() {
       y: rotatePosition.y,
       z: rotatePosition.z,
     })
-    .onUpdate((object) => {
-      const extended = object.normalize().multiplyScalar(cameraDistance);
+    .onUpdate((position) => {
+      const extended = position.normalize().multiplyScalar(cameraDistance);
       camera.position.copy(extended);
       camera.lookAt(scene.position);
     })
     .easing(TWEEN.Easing.Exponential.Out);
 
-  extend.chain(rotate);
-  extend.start();
+  let startingTween;
+
+  if (extendPosition.equals(camera.position)) {
+    startingTween = rotate;
+  } else {
+    startingTween = extend;
+
+    if (isNewSelected) {
+      startingTween.chain(rotate);
+    }
+  }
+
+  startingTween.start();
 }
 
 function updateIntersected() {

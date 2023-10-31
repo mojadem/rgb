@@ -10,7 +10,15 @@ const planes = [];
 const outlines = [];
 let particles;
 
-let CURRENT_INDEX = 0;
+const numParticles = 100000;
+const particleRadius = 1000;
+const cameraDistance = 5;
+
+const fov = 45;
+const near = 0.1;
+const far = particleRadius * 2;
+
+let CURRENT = null;
 let INTERSECTED = null;
 let pageActive = false;
 
@@ -19,12 +27,12 @@ animate();
 
 function init() {
   camera = new THREE.PerspectiveCamera(
-    45,
+    fov,
     window.innerWidth / window.innerHeight,
-    0.1,
-    1000
+    near,
+    far
   );
-  camera.position.z = 5;
+  camera.position.z = particleRadius;
 
   scene = new THREE.Scene();
 
@@ -36,22 +44,30 @@ function init() {
   pointer = new THREE.Vector2();
 
   controls = new OrbitControls(camera, renderer.domElement);
+  controls.enablePan = false;
+  controls.enableRotate = false;
 
-  createLights();
-  createPlanes();
-  createParticles();
-
-  window.addEventListener("resize", onWindowResize);
-  window.addEventListener("pointermove", onPointerMove);
-  window.addEventListener("click", onClick);
+  initLights();
+  initPlanes();
+  initParticles();
+  initEventListeners();
 }
 
-function createLights() {
+function animate() {
+  window.requestAnimationFrame(animate);
+  controls.update();
+  TWEEN.update();
+  updateIntersected();
+  updateCursor();
+  renderer.render(scene, camera);
+}
+
+function initLights() {
   const light = new THREE.AmbientLight(0xffffff);
   scene.add(light);
 }
 
-function createPlanes() {
+function initPlanes() {
   const planeGeometry = new THREE.PlaneGeometry(1, 1);
 
   const outlinePoints = [];
@@ -93,14 +109,13 @@ function createPlanes() {
 
     placement.applyAxisAngle(up, (2 * Math.PI) / 3);
   }
+
+  CURRENT = planes[0];
 }
 
-function createParticles() {
+function initParticles() {
   const particleGeometry = new THREE.BufferGeometry();
   const positions = [];
-
-  const numParticles = 3000;
-  const maxDistance = 100;
 
   const normalSample = () => {
     // normal distribution; see https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
@@ -117,8 +132,8 @@ function createParticles() {
   for (let i = 0; i < numParticles; i++) {
     const pos = new THREE.Vector3()
       .randomDirection()
-      .multiplyScalar(normalSample() * maxDistance)
-      .clampLength(5, maxDistance);
+      .multiplyScalar(normalSample() * particleRadius)
+      .clampLength(cameraDistance, particleRadius);
     positions.push(pos.x, pos.y, pos.z);
   }
 
@@ -131,71 +146,91 @@ function createParticles() {
   scene.add(particles);
 }
 
-function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
+function initEventListeners() {
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
 
-  renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  window.addEventListener("pointermove", () => {
+    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  });
+
+  window.addEventListener("click", () => {
+    if (!pageActive) {
+      pageActive = true;
+      zoomInCamera();
+    } else {
+      selectPlane();
+    }
+  });
+
+  controls.addEventListener("change", () => {
+    if (camera.position.length() < 1 + near) {
+      console.log("change");
+    }
+  });
 }
 
-function onPointerMove(event) {
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-  pageActive = true;
+function zoomInCamera() {
+  new TWEEN.Tween(camera.position)
+    .to({ x: 0, y: 0, z: cameraDistance }, 3000)
+    .easing(TWEEN.Easing.Quartic.Out)
+    .start();
 }
 
-function onClick() {
+function selectPlane() {
   if (INTERSECTED) {
-    CURRENT_INDEX = INTERSECTED.userData.index;
-
-    const newCameraPosition = new THREE.Vector3(
-      INTERSECTED.position.x,
-      INTERSECTED.position.y,
-      INTERSECTED.position.z
-    ).multiplyScalar(5);
-
-    new TWEEN.Tween(camera.position)
-      .to({
-        x: newCameraPosition.x,
-        y: newCameraPosition.y,
-        z: newCameraPosition.z,
-      })
-      .onUpdate((object) => {
-        const extendedPosition = object.normalize().multiplyScalar(5);
-        camera.position.copy(extendedPosition);
-        camera.lookAt(scene.position);
-      })
-      .easing(TWEEN.Easing.Exponential.Out)
-      .start();
+    CURRENT = INTERSECTED;
+    viewPlane();
   }
 }
 
-function animate() {
-  window.requestAnimationFrame(animate);
-  controls.update();
-  TWEEN.update();
-  updateIntersected();
-  updateCursor();
-  renderer.render(scene, camera);
+function viewPlane() {
+  const extendPosition = camera.position.clone().normalize().multiplyScalar(5);
+
+  const extend = new TWEEN.Tween(camera.position).to(
+    {
+      x: extendPosition.x,
+      y: extendPosition.y,
+      z: extendPosition.z,
+    },
+    100
+  );
+
+  const rotatePosition = new THREE.Vector3(
+    INTERSECTED.position.x,
+    INTERSECTED.position.y,
+    INTERSECTED.position.z
+  ).multiplyScalar(cameraDistance);
+
+  const rotate = new TWEEN.Tween(camera.position)
+    .to({
+      x: rotatePosition.x,
+      y: rotatePosition.y,
+      z: rotatePosition.z,
+    })
+    .onUpdate((object) => {
+      const extended = object.normalize().multiplyScalar(cameraDistance);
+      camera.position.copy(extended);
+      camera.lookAt(scene.position);
+    })
+    .easing(TWEEN.Easing.Exponential.Out);
+
+  extend.chain(rotate);
+  extend.start();
 }
 
 function updateIntersected() {
-  if (!pageActive) {
-    return;
-  }
-
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(planes);
 
   const update = (value) => {
     outlines[INTERSECTED.userData.index].visible = value;
     INTERSECTED.material.emissive.setHex(value ? 0x222222 : 0x000000);
-
-    new TWEEN.Tween(particles.material.color)
-      .to(value ? INTERSECTED.material.color : new THREE.Color(0xffffff))
-      .easing(TWEEN.Easing.Exponential.Out)
-      .start();
   };
 
   if (intersects.length > 0) {
@@ -214,8 +249,11 @@ function updateIntersected() {
 }
 
 function updateCursor() {
-  if (INTERSECTED) {
+  if (!pageActive) {
     document.body.style.cursor = "pointer";
+  } else if (INTERSECTED) {
+    document.body.style.cursor =
+      CURRENT === INTERSECTED ? "zoom-in" : "pointer";
   } else {
     document.body.style.cursor = "default";
   }

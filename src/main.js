@@ -20,7 +20,9 @@ const far = particleRadius * 2;
 
 let CURRENT = null;
 let INTERSECTED = null;
+
 let pageActive = false;
+let clickDisabled = false;
 
 init();
 animate();
@@ -56,7 +58,14 @@ function init() {
 function animate() {
   window.requestAnimationFrame(animate);
   controls.update();
+
   TWEEN.update();
+  if (TWEEN.getAll().length > 0) {
+    clickDisabled = true;
+  } else {
+    clickDisabled = false;
+  }
+
   updateIntersected();
   updateCursor();
   renderer.render(scene, camera);
@@ -160,6 +169,10 @@ function initEventListeners() {
   });
 
   window.addEventListener("click", () => {
+    if (clickDisabled) {
+      return;
+    }
+
     if (!pageActive) {
       pageActive = true;
       zoomInCamera();
@@ -190,18 +203,12 @@ function zoomInCamera() {
 }
 
 function selectPlane() {
-  if (INTERSECTED) {
-    let isNewSelected = true;
-    if (CURRENT === INTERSECTED) {
-      isNewSelected = false;
-    }
-
-    CURRENT = INTERSECTED;
-    viewPlane(isNewSelected);
+  if (INTERSECTED === null) {
+    return;
   }
-}
 
-function viewPlane(isNewSelected) {
+  const selectedPlane = INTERSECTED;
+
   const extendPosition = new THREE.Vector3()
     .copy(camera.position)
     .normalize()
@@ -217,9 +224,9 @@ function viewPlane(isNewSelected) {
   );
 
   const rotatePosition = new THREE.Vector3(
-    INTERSECTED.position.x,
-    INTERSECTED.position.y,
-    INTERSECTED.position.z
+    selectedPlane.position.x,
+    selectedPlane.position.y,
+    selectedPlane.position.z
   ).multiplyScalar(cameraDistance);
 
   const rotate = new TWEEN.Tween(camera.position)
@@ -233,7 +240,10 @@ function viewPlane(isNewSelected) {
       camera.position.copy(extended);
       camera.lookAt(scene.position);
     })
-    .easing(TWEEN.Easing.Exponential.Out);
+    .easing(TWEEN.Easing.Exponential.Out)
+    .onComplete(() => {
+      CURRENT = selectedPlane;
+    });
 
   let startingTween;
 
@@ -242,7 +252,7 @@ function viewPlane(isNewSelected) {
   } else {
     startingTween = extend;
 
-    if (isNewSelected) {
+    if (CURRENT !== selectedPlane) {
       startingTween.chain(rotate);
     }
   }
@@ -275,7 +285,9 @@ function updateIntersected() {
 }
 
 function updateCursor() {
-  if (!pageActive) {
+  if (clickDisabled) {
+    document.body.style.cursor = "not-allowed";
+  } else if (!pageActive) {
     document.body.style.cursor = "pointer";
   } else if (INTERSECTED) {
     document.body.style.cursor =

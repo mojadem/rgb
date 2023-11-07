@@ -6,6 +6,9 @@ let camera, scene, renderer;
 let raycaster, pointer;
 let controls;
 
+const colors = [0xff0000, 0x00ff00, 0x0000ff];
+let colorSelections = [0, 0, 0]; // r, g, b
+
 const planes = [];
 const outlines = [];
 let particles;
@@ -51,7 +54,7 @@ function init() {
 
   initLights();
   initPlanes();
-  initParticles();
+  initStars();
   initEventListeners();
 }
 
@@ -93,7 +96,6 @@ function initPlanes() {
 
   const placement = new THREE.Vector3(0, 0, 1);
   const up = new THREE.Vector3(0, 1, 0);
-  const colors = [0xff0000, 0x00ff00, 0x0000ff];
 
   for (let i = 0; i < 3; i++) {
     const plane = new THREE.Mesh(
@@ -122,7 +124,7 @@ function initPlanes() {
   CURRENT = planes[0];
 }
 
-function initParticles() {
+function initStars() {
   const particleGeometry = new THREE.BufferGeometry();
   const positions = [];
 
@@ -163,7 +165,7 @@ function initEventListeners() {
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  window.addEventListener("pointermove", () => {
+  window.addEventListener("pointermove", (event) => {
     pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
     pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
   });
@@ -183,7 +185,7 @@ function initEventListeners() {
 
   controls.addEventListener("change", () => {
     if (camera.position.length() < 1 + near) {
-      console.log("change");
+      resetScene();
     } else if (camera.position.length() > cameraDistance) {
       const clamped = new THREE.Vector3()
         .copy(camera.position)
@@ -196,8 +198,12 @@ function initEventListeners() {
 }
 
 function zoomInCamera() {
+  const targetPosition = new THREE.Vector3()
+    .copy(camera.position)
+    .normalize()
+    .multiplyScalar(cameraDistance);
   new TWEEN.Tween(camera.position)
-    .to({ x: 0, y: 0, z: cameraDistance }, 3000)
+    .to(targetPosition, 3000)
     .easing(TWEEN.Easing.Quartic.Out)
     .start();
 }
@@ -295,4 +301,30 @@ function updateCursor() {
   } else {
     document.body.style.cursor = "default";
   }
+}
+
+function resetScene() {
+  const selectedPlane = CURRENT.userData.index;
+
+  colorSelections[selectedPlane] += 1;
+
+  const max = Math.max(...colorSelections);
+
+  const newColor = new THREE.Color(
+    ...colorSelections.map((c) => {
+      return c / max;
+    })
+  );
+  console.log(newColor);
+
+  particles.material.setValues({ color: newColor });
+
+  camera.position.copy(
+    new THREE.Vector3()
+      .copy(camera.position)
+      .normalize()
+      .multiplyScalar(particleRadius)
+  );
+
+  zoomInCamera();
 }

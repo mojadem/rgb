@@ -1,6 +1,8 @@
-varying vec2 vUv;
+precision mediump float;
+
+varying vec2 textureCoord;
 
 void main() {
-    vUv = uv;
+    textureCoord = uv;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }

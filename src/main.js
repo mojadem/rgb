@@ -40,7 +40,7 @@ function init() {
     near,
     far
   );
-  camera.position.z = particleRadius;
+  camera.position.z = cameraDistance;
 
   scene = new THREE.Scene();
 
@@ -109,7 +109,8 @@ function initPlanes() {
         fragmentShader: imageFilterFrag,
         side: THREE.DoubleSide,
         uniforms: {
-          tex: { type: "t", value: texture },
+          u_texture: { value: texture },
+          u_color: { value: i },
         },
       })
     );
@@ -185,7 +186,7 @@ function initEventListeners() {
 
     if (!pageActive) {
       pageActive = true;
-      zoomInCamera();
+      // zoomInCamera();
     } else {
       selectPlane();
     }

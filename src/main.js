@@ -2,6 +2,9 @@ import * as THREE from "three";
 import TWEEN from "three/examples/jsm/libs/tween.module.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+import imageFilterVert from "./glsl/imageFilter.vert";
+import imageFilterFrag from "./glsl/imageFilter.frag";
+
 let camera, scene, renderer;
 let raycaster, pointer;
 let controls;
@@ -81,6 +84,7 @@ function initLights() {
 
 function initPlanes() {
   const planeGeometry = new THREE.PlaneGeometry(1, 1);
+  const texture = new THREE.TextureLoader().load("../textures/example.jpg");
 
   const outlinePoints = [];
   outlinePoints.push(new THREE.Vector3(-0.5, 0.5, 0));
@@ -100,9 +104,13 @@ function initPlanes() {
   for (let i = 0; i < 3; i++) {
     const plane = new THREE.Mesh(
       planeGeometry,
-      new THREE.MeshLambertMaterial({
-        color: colors[i],
+      new THREE.ShaderMaterial({
+        vertexShader: imageFilterVert,
+        fragmentShader: imageFilterFrag,
         side: THREE.DoubleSide,
+        uniforms: {
+          tex: { type: "t", value: texture },
+        },
       })
     );
     plane.position.copy(placement);
@@ -272,7 +280,7 @@ function updateIntersected() {
 
   const update = (value) => {
     outlines[INTERSECTED.userData.index].visible = value;
-    INTERSECTED.material.emissive.setHex(value ? 0x222222 : 0x000000);
+    // INTERSECTED.material.emissive.setHex(value ? 0x222222 : 0x000000);
   };
 
   if (intersects.length > 0) {

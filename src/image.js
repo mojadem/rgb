@@ -4,7 +4,7 @@ import imageFilterVert from "./glsl/imageFilter.vert";
 import imageFilterFrag from "./glsl/imageFilter.frag";
 
 function loadTexture() {
-  return new THREE.TextureLoader().load("../textures/example.jpg");
+  return new THREE.TextureLoader().load("assets/example.jpg");
 }
 
 /**

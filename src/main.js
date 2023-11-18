@@ -10,6 +10,7 @@ import {
 } from "./interaction";
 import { createPlane } from "./plane";
 import { updateAnimation } from "./animation";
+import { createParticles } from "./particles";
 
 /** @type {THREE.PerspectiveCamera} */
 let camera;
@@ -34,8 +35,6 @@ function init() {
   camera.position.z = cameraDistance;
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x222222);
-  // scene.add(new THREE.AmbientLight(0xffffff));
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -50,6 +49,7 @@ function init() {
 
   initInteraction(camera, renderer);
   initPlanes();
+  initParticles();
   initEventListeners();
 }
 
@@ -72,6 +72,13 @@ function initPlanes() {
   }
 }
 
+function initParticles() {
+  const amount = 1000;
+  const radius = 100;
+  const particles = createParticles(amount, cameraDistance, radius);
+  scene.add(particles);
+}
+
 function initEventListeners() {
   window.addEventListener("resize", () => {
     onResize(camera, renderer);
@@ -82,6 +89,6 @@ function initEventListeners() {
   });
 
   window.addEventListener("click", () => {
-    onClick(scene, camera);
+    onClick(camera, scene, planes);
   });
 }

@@ -1,39 +1,24 @@
 import * as THREE from "three";
 import TWEEN from "three/examples/jsm/libs/tween.module.js";
-
 import { cameraDistance } from "./constants";
 
 function updateAnimation() {
   TWEEN.update();
 }
+
 /**
- *
- * @param {THREE.Mesh} plane
  * @param {THREE.PerspectiveCamera} camera
  * @param {THREE.Scene} scene
+ * @param {THREE.Mesh} plane
  */
-function viewPlane(plane, scene, camera) {
-  const extendPosition = new THREE.Vector3()
-    .copy(camera.position)
-    .normalize()
-    .multiplyScalar(5);
-
-  const extend = new TWEEN.Tween(camera.position).to(
-    {
-      x: extendPosition.x,
-      y: extendPosition.y,
-      z: extendPosition.z,
-    },
-    100
-  );
-
+function viewPlane(camera, scene, plane) {
   const rotatePosition = new THREE.Vector3(
     plane.position.x,
     plane.position.y,
     plane.position.z
   ).multiplyScalar(cameraDistance);
 
-  const rotate = new TWEEN.Tween(camera.position)
+  new TWEEN.Tween(camera.position)
     .to({
       x: rotatePosition.x,
       y: rotatePosition.y,
@@ -44,24 +29,35 @@ function viewPlane(plane, scene, camera) {
       camera.position.copy(extended);
       camera.lookAt(scene.position);
     })
-    .easing(TWEEN.Easing.Exponential.Out);
-  // .onComplete(() => {
-  //   CURRENT = selectedPlane;
-  // });
-
-  let startingTween;
-
-  if (extendPosition.equals(camera.position)) {
-    startingTween = rotate;
-  } else {
-    startingTween = extend;
-
-    // if (CURRENT !== selectedPlane) {
-    //   startingTween.chain(rotate);
-    // }
-  }
-
-  startingTween.start();
+    .easing(TWEEN.Easing.Exponential.Out)
+    .start();
 }
 
-export { updateAnimation, viewPlane };
+/**
+ * @param {THREE.Scene} scene
+ * @param {THREE.Mesh} currentPlane
+ * @param {THREE.Mesh[]} planes
+ */
+function alignPlanes(scene, currentPlane, planes) {
+  for (let plane of planes) {
+    if (plane === currentPlane) {
+      continue;
+    }
+
+    new TWEEN.Tween(plane.position)
+      .to({
+        x: currentPlane.position.x,
+        y: currentPlane.position.y,
+        z: currentPlane.position.z,
+      })
+      .onUpdate((position) => {
+        const extended = position.normalize();
+        plane.position.copy(extended);
+        plane.lookAt(scene.position);
+      })
+      .easing(TWEEN.Easing.Exponential.Out)
+      .start();
+  }
+}
+
+export { updateAnimation, viewPlane, alignPlanes };

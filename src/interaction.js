@@ -1,32 +1,32 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-
-import { viewPlane } from "./animation";
+import { alignPlanes, viewPlane } from "./animation";
 
 /** @type {THREE.Raycaster} */
 let raycaster;
 /** @type {THREE.Vector2} */
 let pointer;
-/** @type {THREE.OrbitControls} */
+/** @type {OrbitControls} */
 let controls;
 /** @type {THREE.Mesh} */
 let INTERSECTED = null;
+/** @type {THREE.Mesh} */
+let CURRENT = null;
 
 /**
  * @param {THREE.PerspectiveCamera} camera
  * @param {THREE.WebGLRenderer} renderer
  */
 function initInteraction(camera, renderer) {
+  console.log("hello");
   raycaster = new THREE.Raycaster();
+  console.log(raycaster);
   pointer = new THREE.Vector2();
 
   controls = new OrbitControls(camera, renderer.domElement);
+  controls.enabled = false; // TODO: remove controls?
 }
 
-/**
- * @param {THREE.PerspectiveCamera} camera
- * @param {THREE.Mesh[]} planes
- */
 function updateInteraction(camera, planes) {
   controls.update();
   updateIntersected(camera, planes);
@@ -42,7 +42,12 @@ function updateIntersected(camera, planes) {
   const intersects = raycaster.intersectObjects(planes, false);
 
   const update = (value) => {
-    INTERSECTED.children[0].visible = value;
+    /** @type {THREE.Line} */
+    const outline = INTERSECTED.children[0];
+
+    outline.material.color = value
+      ? new THREE.Color(0xffffff)
+      : outline.userData.color;
   };
 
   if (intersects.length > 0) {
@@ -69,7 +74,6 @@ function updateCursor() {
 }
 
 /**
- *
  * @param {THREE.PerspectiveCamera} camera
  * @param {THREE.WebGLRenderer} renderer
  */
@@ -91,14 +95,20 @@ function onPointermove(event) {
 /**
  * @param {THREE.PerspectiveCamera} camera
  * @param {THREE.Scene} scene
+ * @param {THREE.Mesh[]} planes
  * @returns
  */
-function onClick(scene, camera) {
+function onClick(camera, scene, planes) {
   if (INTERSECTED === null) {
     return;
   }
 
-  viewPlane(INTERSECTED, scene, camera);
+  if (INTERSECTED === CURRENT) {
+    // alignPlanes(scene, CURRENT, planes);
+  } else {
+    viewPlane(camera, scene, INTERSECTED);
+    CURRENT = INTERSECTED;
+  }
 }
 
 export { initInteraction, updateInteraction, onResize, onPointermove, onClick };

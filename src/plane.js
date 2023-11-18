@@ -3,7 +3,7 @@ import { loadTexture, createShader } from "./image";
 
 /**
  *
- * @param {int} color
+ * @param {int} color 0: red, 1: green, 2: blue
  * @param {THREE.Vector3} position
  */
 function createPlane(color, position) {
@@ -14,8 +14,7 @@ function createPlane(color, position) {
 
   const plane = new THREE.Mesh(geometry, material);
 
-  const outline = createOutline(plane);
-  outline.visible = false;
+  const outline = createOutline(plane, color);
   plane.add(outline);
 
   plane.lookAt(position);
@@ -26,8 +25,9 @@ function createPlane(color, position) {
 
 /**
  * @param {THREE.Mesh} plane
+ * @param {int} color
  */
-function createOutline(plane) {
+function createOutline(plane, color) {
   const points = [];
   points.push(new THREE.Vector3(-0.5, 0.5, 0));
   points.push(new THREE.Vector3(0.5, 0.5, 0));
@@ -35,10 +35,13 @@ function createOutline(plane) {
   points.push(new THREE.Vector3(-0.5, -0.5, 0));
   points.push(new THREE.Vector3(-0.5, 0.5, 0));
 
+  const colors = [0xff0000, 0x00ff00, 0x0000ff];
+
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
-  const material = new THREE.LineBasicMaterial();
+  const material = new THREE.LineBasicMaterial({ color: colors[color] });
 
   const outline = new THREE.Line(geometry, material);
+  outline.userData.color = new THREE.Color(colors[color]);
   outline.position.copy(plane.position);
   outline.rotation.copy(plane.rotation);
 

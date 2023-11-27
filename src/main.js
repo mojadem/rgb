@@ -11,6 +11,7 @@ import {
 import { createPlane } from "./plane";
 import { updateAnimation } from "./animation";
 import { createParticles } from "./particles";
+import { loadTexture } from "./image";
 
 /** @type {THREE.PerspectiveCamera} */
 let camera;
@@ -70,6 +71,8 @@ function initPlanes() {
     planes.push(plane);
     normal.applyAxisAngle(up, (2 * Math.PI) / 3);
   }
+
+  loadTexture(planes);
 }
 
 function initParticles() {

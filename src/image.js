@@ -1,26 +1,22 @@
 import * as THREE from "three";
 
-import imageFilterVert from "./glsl/imageFilter.vert";
-import imageFilterFrag from "./glsl/imageFilter.frag";
-
-function loadTexture() {
-  return new THREE.TextureLoader().load("assets/example.jpg");
-}
-
 /**
- * @param {int} color
- * @param {THREE.Texture} texture
+ * @param {THREE.Mesh[]} planes
  */
-function createShader(color, texture) {
-  return new THREE.ShaderMaterial({
-    vertexShader: imageFilterVert,
-    fragmentShader: imageFilterFrag,
-    side: THREE.DoubleSide,
-    uniforms: {
-      u_texture: { value: texture },
-      u_color: { value: color },
-    },
-  });
+async function loadTexture(planes) {
+  fetch("http://localhost:3000/api/get-image", {
+    headers: { Accept: "image/jpg" },
+  })
+    .then((response) => response.blob())
+    .then((textureBlob) => {
+      const objectURL = URL.createObjectURL(textureBlob);
+      const texture = new THREE.TextureLoader().load(objectURL);
+
+      for (const plane of planes) {
+        plane.material.uniforms.u_texture.value = texture;
+        plane.material.needsUpdate = true;
+      }
+    });
 }
 
-export { loadTexture, createShader };
+export { loadTexture };

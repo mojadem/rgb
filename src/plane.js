@@ -1,5 +1,7 @@
 import * as THREE from "three";
-import { loadTexture, createShader } from "./image";
+
+import imageFilterVert from "./glsl/imageFilter.vert";
+import imageFilterFrag from "./glsl/imageFilter.frag";
 
 /**
  *
@@ -7,10 +9,18 @@ import { loadTexture, createShader } from "./image";
  * @param {THREE.Vector3} position
  */
 function createPlane(color, position) {
-  const texture = loadTexture();
-
   const geometry = new THREE.PlaneGeometry(1, 1);
-  const material = createShader(color, texture);
+  const material = new THREE.ShaderMaterial({
+    vertexShader: imageFilterVert,
+    fragmentShader: imageFilterFrag,
+    side: THREE.DoubleSide,
+    uniforms: {
+      u_texture: {
+        /** to be updated in loadTexture() */
+      },
+      u_color: { value: color },
+    },
+  });
 
   const plane = new THREE.Mesh(geometry, material);
 

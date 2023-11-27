@@ -18,9 +18,7 @@ let CURRENT = null;
  * @param {THREE.WebGLRenderer} renderer
  */
 function initInteraction(camera, renderer) {
-  console.log("hello");
   raycaster = new THREE.Raycaster();
-  console.log(raycaster);
   pointer = new THREE.Vector2();
 
   controls = new OrbitControls(camera, renderer.domElement);

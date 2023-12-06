@@ -27,8 +27,10 @@ function createPlane(color, position) {
   const outline = createOutline(plane, color);
   plane.add(outline);
 
-  plane.lookAt(position);
+  plane.lookAt(position.clone().negate());
   plane.position.copy(position);
+
+  plane.userData.position = position.clone();
 
   return plane;
 }

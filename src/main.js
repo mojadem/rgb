@@ -48,9 +48,9 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  initInteraction(camera, renderer);
   initPlanes();
   initParticles();
+  initInteraction(camera, renderer, planes[0]);
   initEventListeners();
 }
 

@@ -17,12 +17,14 @@ let CURRENT = null;
  * @param {THREE.PerspectiveCamera} camera
  * @param {THREE.WebGLRenderer} renderer
  */
-function initInteraction(camera, renderer) {
+function initInteraction(camera, renderer, initalPlane) {
   raycaster = new THREE.Raycaster();
   pointer = new THREE.Vector2();
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enabled = false; // TODO: remove controls?
+
+  CURRENT = initalPlane;
 }
 
 function updateInteraction(camera, planes) {
@@ -102,7 +104,7 @@ function onClick(camera, scene, planes) {
   }
 
   if (INTERSECTED === CURRENT) {
-    // alignPlanes(scene, CURRENT, planes);
+    alignPlanes(scene, CURRENT, planes);
   } else {
     viewPlane(camera, scene, INTERSECTED);
     CURRENT = INTERSECTED;

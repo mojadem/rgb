@@ -2,6 +2,8 @@ import * as THREE from "three";
 import TWEEN from "three/examples/jsm/libs/tween.module.js";
 import { cameraDistance } from "./constants";
 
+let planesAligned = false;
+
 function updateAnimation() {
   TWEEN.update();
 }
@@ -39,25 +41,38 @@ function viewPlane(camera, scene, plane) {
  * @param {THREE.Mesh[]} planes
  */
 function alignPlanes(scene, currentPlane, planes) {
+  let offset = 0.1;
+
   for (let plane of planes) {
     if (plane === currentPlane) {
       continue;
     }
 
+    let targetPosition;
+
+    if (planesAligned) {
+      targetPosition = currentPlane.position.clone().multiplyScalar(1 - offset);
+      offset *= 2;
+    } else {
+      targetPosition = plane.userData.position;
+    }
+
     new TWEEN.Tween(plane.position)
       .to({
-        x: currentPlane.position.x,
-        y: currentPlane.position.y,
-        z: currentPlane.position.z,
+        x: targetPosition.x,
+        y: targetPosition.y,
+        z: targetPosition.z,
       })
       .onUpdate((position) => {
-        const extended = position.normalize();
-        plane.position.copy(extended);
+        // const extended = position.normalize().multiplyScalar();
+        // plane.position.copy(extended);
         plane.lookAt(scene.position);
       })
       .easing(TWEEN.Easing.Exponential.Out)
       .start();
   }
+
+  planesAligned = !planesAligned;
 }
 
 export { updateAnimation, viewPlane, alignPlanes };

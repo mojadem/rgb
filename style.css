@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+}
+
+#gui {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+}
+
+#thumbnail {
+  width: 150px;
+  height: 150px;
+}
+
+.slider {
+  display: block;
+  width: 150px;
+  margin-top: 10px;
+}
+
+#red-slider {
+  accent-color: red;
+}
+
+#green-slider {
+  accent-color: green;
+}
+
+#blue-slider {
+  accent-color: blue;
+}

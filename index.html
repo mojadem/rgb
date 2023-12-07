@@ -3,23 +3,39 @@
   <head lang="en">
     <meta charset="utf-8" />
     <title>rgb</title>
-    <style>
-      body {
-        margin: 0;
-      }
-
-      #thumbnail {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 1;
-        width: 100px;
-        height: 100px;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <script type="module" src="src/main.js"></script>
-    <img id="thumbnail" />
+    <div id="gui">
+      <img id="thumbnail" />
+      <input
+        id="red-slider"
+        class="slider"
+        type="range"
+        min="0.0"
+        max="1.0"
+        step="0.01"
+        value="0.0"
+      />
+      <input
+        id="green-slider"
+        class="slider"
+        type="range"
+        min="0.0"
+        max="1.0"
+        step="0.01"
+        value="0.0"
+      />
+      <input
+        id="blue-slider"
+        class="slider"
+        type="range"
+        min="0.0"
+        max="1.0"
+        step="0.01"
+        value="0.0"
+      />
+    </div>
   </body>
 </html>

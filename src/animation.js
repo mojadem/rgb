@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import TWEEN from "three/examples/jsm/libs/tween.module.js";
 import { cameraDistance } from "./constants";
+import { planes } from "./planes";
 
 let planesAligned = false;
 
@@ -37,16 +38,15 @@ function viewPlane(camera, plane) {
 
 /**
  * @param {THREE.Mesh} currentPlane
- * @param {THREE.Group} planes
  */
-function alignPlanes(currentPlane, planes) {
+function alignPlanes(currentPlane) {
   let offset = 0.1;
   const isCurrent = (plane) => plane === currentPlane;
-  const startIndex = 1 + planes.children.findIndex(isCurrent);
-  const numPlanes = planes.children.length;
+  const startIndex = 1 + planes.findIndex(isCurrent);
+  const numPlanes = planes.length;
 
   for (let i = startIndex; i < startIndex + numPlanes; i++) {
-    const plane = planes.children[i % numPlanes];
+    const plane = planes[i % numPlanes];
     if (plane === currentPlane) {
       continue;
     }
@@ -67,8 +67,7 @@ function alignPlanes(currentPlane, planes) {
         z: targetPosition.z,
       })
       .onUpdate((position) => {
-        const awayFromOrigin = position.clone().sub(planes.position);
-        plane.lookAt(position.clone().add(awayFromOrigin));
+        plane.lookAt(position.clone().add(position));
       })
       .easing(TWEEN.Easing.Exponential.Out)
       .start();

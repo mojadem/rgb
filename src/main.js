@@ -8,10 +8,11 @@ import {
   onClick,
   updateInteraction,
 } from "./interaction";
-import { createPlane } from "./plane";
+import { createPlanes } from "./planes";
 import { updateAnimation } from "./animation";
 import { createParticles } from "./particles";
-import { loadTexture } from "./image";
+import { getImage } from "./image";
+import { initGui } from "./gui";
 
 /** @type {THREE.PerspectiveCamera} */
 let camera;
@@ -19,9 +20,6 @@ let camera;
 let scene;
 /** @type {THREE.WebGLRenderer} */
 let renderer;
-
-/** @type {THREE.Group} */
-const planes = new THREE.Group();
 
 init();
 animate();
@@ -49,30 +47,23 @@ function init() {
   });
 
   initPlanes();
-  initParticles();
-  initInteraction(camera, renderer, planes.children[0]);
+  getImage();
+  // initParticles();
+  initGui();
+  initInteraction(camera, renderer);
   initEventListeners();
 }
 
 function animate() {
   window.requestAnimationFrame(animate);
-  updateInteraction(camera, planes);
+  updateInteraction(camera);
   updateAnimation();
   renderer.render(scene, camera);
 }
 
 function initPlanes() {
-  const normal = new THREE.Vector3(0, 0, 1);
-  const up = new THREE.Vector3(0, 1, 0);
-
-  for (let i = 0; i < 3; i++) {
-    const plane = createPlane(i, normal);
-    planes.add(plane);
-    normal.applyAxisAngle(up, (2 * Math.PI) / 3);
-  }
-
-  scene.add(planes);
-  loadTexture(planes);
+  const planes = createPlanes();
+  planes.map((plane) => scene.add(plane));
 }
 
 function initParticles() {
@@ -92,6 +83,6 @@ function initEventListeners() {
   });
 
   window.addEventListener("click", () => {
-    onClick(camera, planes);
+    onClick(camera);
   });
 }

@@ -2,12 +2,17 @@ precision mediump float;
 
 uniform sampler2D u_texture;
 uniform int u_color;
+uniform vec3 u_tint;
 
 varying vec2 textureCoord;
 
 void main()
 {
     vec4 texColor = texture2D(u_texture, textureCoord);
+
+    texColor.r = texColor.r - (1. - u_tint.r);
+    texColor.g = texColor.g - (1. - u_tint.g);
+    texColor.b = texColor.b - (1. - u_tint.b);
 
     vec4 outColor = vec4(0., 0., 0., 0.);
 
@@ -18,10 +23,6 @@ void main()
         outColor[u_color] = texColor[u_color];
         outColor.a = 1.;
     }
-
-    // if (texColor.r == texColor.g && texColor.g == texColor.b && texColor.r == texColor.b) {
-    //     outColor = texColor;
-    // }
 
     gl_FragColor = outColor; 
 }    

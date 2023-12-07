@@ -1,4 +1,10 @@
 import * as THREE from "three";
+import { loadTexture } from "./planes";
+
+/** @type {string} */
+let imgUrl;
+/** @type {string} */
+let imgData;
 
 /**
  * @param {string} url
@@ -12,29 +18,21 @@ async function apiCall(url) {
   }
 }
 
-/**
- * @param {THREE.Group} planes
- */
-async function loadTexture(planes) {
+async function getImage() {
   const response = await apiCall("https://random.imagecdn.app/500/500");
 
-  document.getElementById("thumbnail").src = response.url;
+  imgUrl = response.url;
+  document.getElementById("thumbnail").src = imgUrl;
+  const texture = new THREE.TextureLoader().load(imgUrl);
 
-  const texture = new THREE.TextureLoader().load(response.url);
-
-  for (let plane of planes.children) {
-    plane.material.transparent = true;
-    plane.material.uniforms.u_texture.value = texture;
-    plane.material.needsUpdate = true;
-  }
+  loadTexture(texture);
 
   const blob = await response.blob();
   const reader = new FileReader();
   reader.readAsDataURL(blob);
   reader.onloadend = () => {
-    const rawData = reader.result;
-    console.log(rawData);
+    imgData = reader.result;
   };
 }
 
-export { loadTexture };
+export { getImage };

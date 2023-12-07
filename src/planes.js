@@ -3,6 +3,22 @@ import * as THREE from "three";
 import imageFilterVert from "./glsl/imageFilter.vert";
 import imageFilterFrag from "./glsl/imageFilter.frag";
 
+/** @type {THREE.Mesh[]} */
+let planes = [];
+
+function createPlanes() {
+  const normal = new THREE.Vector3(0, 0, 1);
+  const up = new THREE.Vector3(0, 1, 0);
+
+  for (let i = 0; i < 3; i++) {
+    const plane = createPlane(i, normal);
+    planes.push(plane);
+    normal.applyAxisAngle(up, (2 * Math.PI) / 3);
+  }
+
+  return planes;
+}
+
 /**
  *
  * @param {int} color 0: red, 1: green, 2: blue
@@ -14,11 +30,16 @@ function createPlane(color, position) {
     vertexShader: imageFilterVert,
     fragmentShader: imageFilterFrag,
     side: THREE.DoubleSide,
+    transparent: true,
     uniforms: {
       u_texture: {
         /** to be updated in loadTexture() */
       },
       u_color: { value: color },
+      u_tint: {
+        /** to be updated by GUI */
+        value: new THREE.Color(0.5, 0.5, 0.5),
+      },
     },
   });
 
@@ -60,4 +81,24 @@ function createOutline(plane, color) {
   return outline;
 }
 
-export { createPlane };
+/**
+ * @param {THREE.Texture} texture
+ */
+function loadTexture(texture) {
+  planes.map((plane) => {
+    plane.material.uniforms.u_texture.value = texture;
+    plane.material.needsUpdate = true;
+  });
+}
+
+/**
+ * @param {THREE.Vector3} tint
+ */
+function updateTint(tint) {
+  planes.map((plane) => {
+    plane.material.uniforms["u_tint"].value.copy(tint);
+    plane.material.needsUpdate = true;
+  });
+}
+
+export { planes, createPlanes, loadTexture, updateTint };

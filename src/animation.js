@@ -15,9 +15,9 @@ function updateAnimation() {
  */
 function viewPlane(camera, plane) {
   const rotatePosition = new THREE.Vector3(
-    plane.position.x,
-    plane.position.y,
-    plane.position.z
+    plane.userData.position.x,
+    plane.userData.position.y,
+    plane.userData.position.z
   ).multiplyScalar(cameraDistance);
 
   new TWEEN.Tween(camera.position)

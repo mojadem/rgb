@@ -35,8 +35,9 @@ function init() {
 
   scene = new THREE.Scene();
 
-  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0);
   document.body.appendChild(renderer.domElement);
 
   window.addEventListener("resize", () => {
@@ -48,7 +49,6 @@ function init() {
 
   initPlanes();
   getImage();
-  // initParticles();
   initGui();
   initInteraction(camera, renderer);
   initEventListeners();
@@ -66,6 +66,7 @@ function initPlanes() {
   planes.map((plane) => scene.add(plane));
 }
 
+// eslint-disable-next-line no-unused-vars
 function initParticles() {
   const amount = 1000;
   const radius = 100;

@@ -65,6 +65,7 @@ function alignPlanes(currentPlane) {
  * @param {THREE.Mesh} currentPlane
  * @param {number} offset
  */
+// eslint-disable-next-line no-unused-vars
 function alignPlaneDirect(plane, currentPlane, offset) {
   const targetPosition = planesAligned
     ? plane.userData.initalPosition
@@ -89,6 +90,7 @@ function alignPlaneDirect(plane, currentPlane, offset) {
  * @param {THREE.Mesh} currentPlane
  * @param {number} offset
  */
+// eslint-disable-next-line no-unused-vars
 function alignPlaneRotate(plane, currentPlane, offset) {
   let target = planesAligned
     ? {

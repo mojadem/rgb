@@ -34,6 +34,7 @@ async function getImage() {
   reader.readAsDataURL(blob);
   reader.onloadend = () => {
     imgData = reader.result;
+    document.getElementById("img-data").innerHTML = imgData;
   };
 }
 

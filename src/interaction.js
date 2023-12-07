@@ -16,6 +16,7 @@ let CURRENT = null;
 /**
  * @param {THREE.PerspectiveCamera} camera
  * @param {THREE.WebGLRenderer} renderer
+ * @param {THREE.Mesh} initalPlane
  */
 function initInteraction(camera, renderer, initalPlane) {
   raycaster = new THREE.Raycaster();
@@ -27,6 +28,10 @@ function initInteraction(camera, renderer, initalPlane) {
   CURRENT = initalPlane;
 }
 
+/**
+ * @param {THREE.PerspectiveCamera} camera
+ * @param {THREE.Group} planes
+ */
 function updateInteraction(camera, planes) {
   controls.update();
   updateIntersected(camera, planes);
@@ -35,11 +40,11 @@ function updateInteraction(camera, planes) {
 
 /**
  * @param {THREE.PerspectiveCamera} camera
- * @param {THREE.Mesh[]} planes
+ * @param {THREE.Group} planes
  */
 function updateIntersected(camera, planes) {
   raycaster.setFromCamera(pointer, camera);
-  const intersects = raycaster.intersectObjects(planes, false);
+  const intersects = raycaster.intersectObjects(planes.children, false);
 
   const update = (value) => {
     /** @type {THREE.Line} */
@@ -94,19 +99,17 @@ function onPointermove(event) {
 
 /**
  * @param {THREE.PerspectiveCamera} camera
- * @param {THREE.Scene} scene
- * @param {THREE.Mesh[]} planes
- * @returns
+ * @param {THREE.Group} planes
  */
-function onClick(camera, scene, planes) {
+function onClick(camera, planes) {
   if (INTERSECTED === null) {
     return;
   }
 
   if (INTERSECTED === CURRENT) {
-    alignPlanes(scene, CURRENT, planes);
+    alignPlanes(CURRENT, planes);
   } else {
-    viewPlane(camera, scene, INTERSECTED);
+    viewPlane(camera, INTERSECTED);
     CURRENT = INTERSECTED;
   }
 }

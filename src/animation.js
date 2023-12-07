@@ -10,10 +10,9 @@ function updateAnimation() {
 
 /**
  * @param {THREE.PerspectiveCamera} camera
- * @param {THREE.Scene} scene
  * @param {THREE.Mesh} plane
  */
-function viewPlane(camera, scene, plane) {
+function viewPlane(camera, plane) {
   const rotatePosition = new THREE.Vector3(
     plane.position.x,
     plane.position.y,
@@ -29,28 +28,28 @@ function viewPlane(camera, scene, plane) {
     .onUpdate((position) => {
       const extended = position.normalize().multiplyScalar(cameraDistance);
       camera.position.copy(extended);
-      camera.lookAt(scene.position);
+      const origin = new THREE.Vector3();
+      camera.lookAt(origin);
     })
     .easing(TWEEN.Easing.Exponential.Out)
     .start();
 }
 
 /**
- * @param {THREE.Scene} scene
  * @param {THREE.Mesh} currentPlane
- * @param {THREE.Mesh[]} planes
+ * @param {THREE.Group} planes
  */
-function alignPlanes(scene, currentPlane, planes) {
+function alignPlanes(currentPlane, planes) {
   let offset = 0.1;
 
-  for (let plane of planes) {
+  for (let plane of planes.children) {
     if (plane === currentPlane) {
       continue;
     }
 
     let targetPosition;
 
-    if (planesAligned) {
+    if (!planesAligned) {
       targetPosition = currentPlane.position.clone().multiplyScalar(1 - offset);
       offset *= 2;
     } else {
@@ -63,10 +62,10 @@ function alignPlanes(scene, currentPlane, planes) {
         y: targetPosition.y,
         z: targetPosition.z,
       })
-      .onUpdate((position) => {
+      .onUpdate(() => {
         // const extended = position.normalize().multiplyScalar();
         // plane.position.copy(extended);
-        plane.lookAt(scene.position);
+        plane.lookAt(planes.position);
       })
       .easing(TWEEN.Easing.Exponential.Out)
       .start();

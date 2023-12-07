@@ -20,8 +20,8 @@ let scene;
 /** @type {THREE.WebGLRenderer} */
 let renderer;
 
-/** @type {THREE.Mesh[]} */
-const planes = [];
+/** @type {THREE.Group} */
+const planes = new THREE.Group();
 
 init();
 animate();
@@ -50,7 +50,7 @@ function init() {
 
   initPlanes();
   initParticles();
-  initInteraction(camera, renderer, planes[0]);
+  initInteraction(camera, renderer, planes.children[0]);
   initEventListeners();
 }
 
@@ -67,11 +67,11 @@ function initPlanes() {
 
   for (let i = 0; i < 3; i++) {
     const plane = createPlane(i, normal);
-    scene.add(plane);
-    planes.push(plane);
+    planes.add(plane);
     normal.applyAxisAngle(up, (2 * Math.PI) / 3);
   }
 
+  scene.add(planes);
   loadTexture(planes);
 }
 
@@ -92,6 +92,6 @@ function initEventListeners() {
   });
 
   window.addEventListener("click", () => {
-    onClick(camera, scene, planes);
+    onClick(camera, planes);
   });
 }

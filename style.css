@@ -4,20 +4,54 @@ body {
 
 #gui {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 1rem;
+  left: 1rem;
   z-index: 1;
+  width: 10rem;
 }
 
-#thumbnail {
-  width: 150px;
-  height: 150px;
-}
-
-.slider {
+.thumbnail {
+  position: relative;
+  padding: 0;
+  border: none;
+  height: 10rem;
   display: block;
-  width: 150px;
-  margin-top: 10px;
+  border: 1px solid white;
+}
+
+.thumbnail:hover {
+  cursor: pointer;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: auto;
+  transition: filter 100ms ease-out;
+}
+
+.thumbnail:hover img {
+  filter: brightness(25%);
+}
+
+.thumbnail i {
+  position: absolute;
+  color: white;
+  text-align: center;
+  top: 25%;
+  left: 25%;
+  font-size: 5rem;
+  opacity: 0;
+  transition: opacity 100ms ease-out;
+}
+
+.thumbnail:hover i {
+  opacity: 1;
+}
+
+input {
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
 }
 
 #red-slider {

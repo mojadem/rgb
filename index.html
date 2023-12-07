@@ -4,14 +4,17 @@
     <meta charset="utf-8" />
     <title>rgb</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
   </head>
   <body>
     <script type="module" src="src/main.js"></script>
     <div id="gui">
-      <img id="thumbnail" />
+      <button id="button" class="thumbnail">
+        <img id="thumbnail" />
+        <i class="ph ph-arrow-clockwise"></i>
+      </button>
       <input
         id="red-slider"
-        class="slider"
         type="range"
         min="-0.25"
         max="0.25"
@@ -20,7 +23,6 @@
       />
       <input
         id="green-slider"
-        class="slider"
         type="range"
         min="-0.25"
         max="0.25"
@@ -29,7 +31,6 @@
       />
       <input
         id="blue-slider"
-        class="slider"
         type="range"
         min="-0.25"
         max="0.25"

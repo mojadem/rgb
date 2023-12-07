@@ -16,7 +16,7 @@ async function apiCall(url) {
  * @param {THREE.Group} planes
  */
 async function loadTexture(planes) {
-  const response = await apiCall("https://picsum.photos/500/500");
+  const response = await apiCall("https://random.imagecdn.app/500/500");
   const texture = new THREE.TextureLoader().load(response.url);
 
   for (let plane of planes.children) {

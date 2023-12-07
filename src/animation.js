@@ -66,8 +66,9 @@ function alignPlanes(currentPlane, planes) {
         y: targetPosition.y,
         z: targetPosition.z,
       })
-      .onUpdate(() => {
-        plane.lookAt(planes.position);
+      .onUpdate((position) => {
+        const awayFromOrigin = position.clone().sub(planes.position);
+        plane.lookAt(position.clone().add(awayFromOrigin));
       })
       .easing(TWEEN.Easing.Exponential.Out)
       .start();

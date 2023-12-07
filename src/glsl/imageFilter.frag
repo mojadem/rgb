@@ -19,9 +19,9 @@ void main()
         outColor.a = 1.;
     }
 
-    if (texColor.r == texColor.g && texColor.g == texColor.b && texColor.r == texColor.b) {
-        outColor = texColor;
-    }
+    // if (texColor.r == texColor.g && texColor.g == texColor.b && texColor.r == texColor.b) {
+    //     outColor = texColor;
+    // }
 
     gl_FragColor = outColor; 
 }    

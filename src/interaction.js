@@ -23,7 +23,9 @@ function initInteraction(camera, renderer, initalPlane) {
   pointer = new THREE.Vector2();
 
   controls = new OrbitControls(camera, renderer.domElement);
-  controls.enabled = false; // TODO: remove controls?
+  controls.enableDamping = false;
+  controls.enablePan = false;
+  controls.enableRotate = false;
 
   CURRENT = initalPlane;
 }

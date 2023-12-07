@@ -41,8 +41,12 @@ function viewPlane(camera, plane) {
  */
 function alignPlanes(currentPlane, planes) {
   let offset = 0.1;
+  const isCurrent = (plane) => plane === currentPlane;
+  const startIndex = 1 + planes.children.findIndex(isCurrent);
+  const numPlanes = planes.children.length;
 
-  for (let plane of planes.children) {
+  for (let i = startIndex; i < startIndex + numPlanes; i++) {
+    const plane = planes.children[i % numPlanes];
     if (plane === currentPlane) {
       continue;
     }
@@ -63,8 +67,6 @@ function alignPlanes(currentPlane, planes) {
         z: targetPosition.z,
       })
       .onUpdate(() => {
-        // const extended = position.normalize().multiplyScalar();
-        // plane.position.copy(extended);
         plane.lookAt(planes.position);
       })
       .easing(TWEEN.Easing.Exponential.Out)

@@ -51,7 +51,7 @@ function createPlane(color, position) {
   plane.lookAt(position);
   plane.position.copy(position);
 
-  plane.userData.position = position.clone();
+  plane.userData.initalPosition = position.clone();
 
   return plane;
 }

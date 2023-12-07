@@ -17,6 +17,9 @@ async function apiCall(url) {
  */
 async function loadTexture(planes) {
   const response = await apiCall("https://random.imagecdn.app/500/500");
+
+  document.getElementById("thumbnail").src = response.url;
+
   const texture = new THREE.TextureLoader().load(response.url);
 
   for (let plane of planes.children) {

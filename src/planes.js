@@ -38,7 +38,7 @@ function createPlane(color, position) {
       u_color: { value: color },
       u_tint: {
         /** to be updated by GUI */
-        value: new THREE.Color(0.5, 0.5, 0.5),
+        value: new THREE.Color(0.0, 0.0, 0.0),
       },
     },
   });

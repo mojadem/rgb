@@ -10,9 +10,9 @@ void main()
 {
     vec4 texColor = texture2D(u_texture, textureCoord);
 
-    texColor.r = texColor.r - (1. - u_tint.r);
-    texColor.g = texColor.g - (1. - u_tint.g);
-    texColor.b = texColor.b - (1. - u_tint.b);
+    texColor.r = texColor.r + u_tint.r;
+    texColor.g = texColor.g + u_tint.g;
+    texColor.b = texColor.b + u_tint.b;
 
     vec4 outColor = vec4(0., 0., 0., 0.);
 

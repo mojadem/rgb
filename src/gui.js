@@ -8,7 +8,7 @@ let greenSlider;
 /** @type {Element} */
 let blueSlider;
 /** @type {THREE.Color} */
-const tint = new THREE.Color(0.5, 0.5, 0.5);
+const tint = new THREE.Color(0.0, 0.0, 0.0);
 
 function initGui() {
   redSlider = document.getElementById("red-slider");

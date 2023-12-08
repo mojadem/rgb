@@ -52,8 +52,8 @@ function alignPlanes(currentPlane) {
       continue;
     }
 
-    // alignPlaneDirect(plane, currentPlane, offset);
-    alignPlaneRotate(plane, currentPlane, offset);
+    alignPlaneDirect(plane, currentPlane, offset);
+    // alignPlaneRotate(plane, currentPlane, offset);
     offset *= 2;
   }
 

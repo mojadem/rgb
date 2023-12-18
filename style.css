@@ -28,45 +28,67 @@ body {
 .thumbnail {
   position: relative;
   padding: 0;
-  border: none;
   height: 10rem;
   display: block;
   border: 1px solid white;
 }
 
-.thumbnail:hover {
-  cursor: pointer;
-}
-
 .thumbnail img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: fill;
   transition: filter 100ms ease-out;
 }
 
-.thumbnail:hover img {
-  filter: brightness(25%);
-}
-
-.thumbnail i {
-  position: absolute;
-  color: white;
-  text-align: center;
-  top: 25%;
-  left: 25%;
-  font-size: 5rem;
+.thumbnail .controls {
   opacity: 0;
-  transition: opacity 100ms ease-out;
+  transform: opacity 100ms ease-out;
 }
 
-.thumbnail:hover i {
+.thumbnail:hover .controls {
+  opacity: 0.75;
+}
+
+.refresh,
+.upload {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  font-size: 2rem;
+  text-align: center;
+  background-color: black;
+  color: white;
+  border: none;
+  opacity: 0.5;
+  transition: opacity 100ms ease-out;
+  cursor: pointer;
+}
+
+.refresh:hover,
+.upload:hover {
   opacity: 1;
+}
+
+.refresh {
+  top: 0;
+}
+
+.upload {
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 input {
   display: block;
   width: 100%;
   margin-top: 1rem;
+}
+
+input[type="file"] {
+  display: none;
 }
 
 #red-slider {

@@ -1,11 +1,6 @@
 import * as THREE from "three";
 import { loadTexture } from "./planes";
 
-/** @type {string} */
-let imgUrl;
-/** @type {string} */
-let imgData;
-
 /**
  * @param {string} url
  */
@@ -23,19 +18,40 @@ async function getImage() {
     "https://64.media.tumblr.com/a94744a6a469f521d735fbe2631acb7f/tumblr_n2raoheCRZ1s33p20o1_500.gif";
   const response = await apiCall("https://random.imagecdn.app/500/500");
 
-  imgUrl = response.url;
-  document.getElementById("thumbnail").src = imgUrl;
-  const texture = new THREE.TextureLoader().load(imgUrl);
-
-  loadTexture(texture);
-
+  setImage(response.url);
   const blob = await response.blob();
+  setImageText(blob);
+}
+
+/**
+ * @param {File} image
+ */
+function uploadImage(image) {
+  const url = URL.createObjectURL(image);
+  setImage(url);
+  setImageText(image);
+}
+
+/**
+ * @param {string|Blob} imageSrc
+ */
+function setImage(imageSrc) {
+  document.getElementById("thumbnail").src = imageSrc;
+  const texture = new THREE.TextureLoader().load(imageSrc);
+  loadTexture(texture);
+}
+
+/**
+ * @param {Blob} imageData
+ */
+function setImageText(imageData) {
   const reader = new FileReader();
-  reader.readAsDataURL(blob);
+  console.log(imageData);
+  reader.readAsDataURL(imageData);
   reader.onloadend = () => {
-    imgData = reader.result;
-    document.getElementById("img-data").innerHTML = imgData;
+    const imageDataText = reader.result;
+    document.getElementById("img-data").innerHTML = imageDataText;
   };
 }
 
-export { getImage };
+export { getImage, uploadImage };

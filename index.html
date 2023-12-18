@@ -6,16 +6,27 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
   </head>
+
   <body>
     <script type="module" src="src/main.js"></script>
     <div class="text">
       <span id="img-data"></span>
     </div>
+
     <div class="gui">
-      <button id="button" class="thumbnail">
+      <div class="thumbnail">
         <img id="thumbnail" />
-        <i class="ph ph-arrow-clockwise"></i>
-      </button>
+        <div class="controls">
+          <button id="refresh" class="refresh">
+            <i class="ph ph-arrow-clockwise"></i>
+          </button>
+          <label class="upload">
+            <input id="upload" type="file" accept="image/png, image/jpeg" />
+            <i class="ph ph-upload-simple"></i>
+          </label>
+        </div>
+      </div>
+
       <input
         id="red-slider"
         type="range"

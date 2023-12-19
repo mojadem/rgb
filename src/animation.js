@@ -1,13 +1,21 @@
 import * as THREE from "three";
 import TWEEN from "three/examples/jsm/libs/tween.module.js";
-import { cameraDistance } from "./constants";
 import { planes } from "./planes";
 
 /** @type {boolean} */
 let planesAligned = false;
+/** @type {number} */
+let cameraDistance = 5;
 
 function updateAnimation() {
   TWEEN.update();
+}
+
+/**
+ * @param {THREE.PerspectiveCamera} camera
+ */
+function updateCameraDistance(camera) {
+  cameraDistance = camera.position.length();
 }
 
 /**
@@ -70,7 +78,6 @@ function alignPlaneDirect(plane, currentPlane, offset) {
   const targetPosition = planesAligned
     ? plane.userData.initalPosition
     : currentPlane.position.clone().multiplyScalar(1 - offset);
-  console.log(targetPosition);
 
   new TWEEN.Tween(plane.position)
     .to({
@@ -139,4 +146,4 @@ function alignPlaneRotate(plane, currentPlane, offset) {
     .start();
 }
 
-export { updateAnimation, viewPlane, alignPlanes };
+export { updateCameraDistance, updateAnimation, viewPlane, alignPlanes };

@@ -46,7 +46,6 @@ function setImage(imageSrc) {
  */
 function setImageText(imageData) {
   const reader = new FileReader();
-  console.log(imageData);
   reader.readAsDataURL(imageData);
   reader.onloadend = () => {
     const imageDataText = reader.result;

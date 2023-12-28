@@ -36,7 +36,7 @@ function init() {
     45,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000
+    1000,
   );
   camera.position.z = 5; // initial camera distance
 
@@ -64,7 +64,7 @@ function init() {
 function animate() {
   window.requestAnimationFrame(animate);
   controls.update();
-  updateIntersected();
+  updateOutlines();
   updateCursor();
   updateAnimation();
   renderer.render(scene, camera);
@@ -88,28 +88,40 @@ function initInteraction() {
 }
 
 function initEventListeners() {
-  window.addEventListener("resize", onResize);
-  window.addEventListener("pointermove", onPointermove);
-  window.addEventListener("click", onClick);
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  window.addEventListener("pointerdown", updateIntersected);
+  window.addEventListener("pointermove", updateIntersected);
+  window.addEventListener("pointerup", (event) => {
+    selectIntersected();
+
+    if (event.pointerType === "touch") {
+      INTERSECTED = null;
+    }
+  });
+
   controls.addEventListener("change", () => updateCameraDistance(camera));
 }
 
-function onResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-/**
- * @param {PointerEvent} event
- */
-function onPointermove(event) {
+function updateIntersected(event) {
   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(planes, false);
+
+  if (intersects.length > 0) {
+    INTERSECTED = intersects[0].object;
+  } else {
+    INTERSECTED = null;
+  }
 }
 
-function onClick() {
+function selectIntersected() {
   if (INTERSECTED === null) {
     return;
   }
@@ -122,31 +134,14 @@ function onClick() {
   }
 }
 
-function updateIntersected() {
-  raycaster.setFromCamera(pointer, camera);
-  const intersects = raycaster.intersectObjects(planes, false);
+function updateOutlines() {
+  for (let plane of planes) {
+    const outline = plane.children[0];
 
-  const update = (value) => {
-    /** @type {THREE.Line} */
-    const outline = INTERSECTED.children[0];
-
-    outline.material.color = value
-      ? new THREE.Color(0xffffff)
-      : outline.userData.color;
-  };
-
-  if (intersects.length > 0) {
-    if (INTERSECTED && INTERSECTED !== intersects[0].object) {
-      update(false);
-    }
-
-    INTERSECTED = intersects[0].object;
-    update(true);
-  } else {
-    if (INTERSECTED) {
-      update(false);
-    }
-    INTERSECTED = null;
+    outline.material.color =
+      plane === INTERSECTED
+        ? new THREE.Color(0xffffff)
+        : outline.userData.color;
   }
 }
 

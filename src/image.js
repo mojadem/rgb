@@ -16,7 +16,7 @@ async function apiCall(url) {
 async function getImage() {
   document.getElementById("thumbnail").src =
     "https://64.media.tumblr.com/a94744a6a469f521d735fbe2631acb7f/tumblr_n2raoheCRZ1s33p20o1_500.gif";
-  const response = await apiCall("https://random.imagecdn.app/500/500");
+  const response = await apiCall("https://picsum.photos/500");
 
   setImage(response.url);
   const blob = await response.blob();

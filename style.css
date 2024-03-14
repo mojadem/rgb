@@ -27,10 +27,7 @@ body {
 }
 
 .thumbnail {
-  position: relative;
-  padding: 0;
   height: 10rem;
-  display: block;
   border: 1px solid white;
 }
 
@@ -38,48 +35,41 @@ body {
   width: 100%;
   height: 100%;
   object-fit: fill;
-  transition: filter 100ms ease-out;
 }
 
-.thumbnail .controls {
-  opacity: 0;
-  transform: opacity 100ms ease-out;
-}
-
-.thumbnail:hover .controls {
-  opacity: 0.75;
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
 }
 
 .refresh,
 .upload {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 50%;
+  padding: 0.5rem 1.25rem 0.5rem 1.25rem;
   font-size: 2rem;
-  text-align: center;
   background-color: black;
   color: white;
-  border: none;
-  opacity: 0.5;
-  transition: opacity 100ms ease-out;
+  border: 1px solid white;
+  /* border-radius: 0.5rem; */
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 100ms ease-out;
 }
 
 .refresh:hover,
 .upload:hover {
-  opacity: 1;
-}
-
-.refresh {
-  top: 0;
+  background-color: #333333;
 }
 
 .upload {
-  top: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.upload input {
+  display: none;
 }
 
 input {

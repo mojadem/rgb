@@ -18,16 +18,45 @@ body {
   overflow: clip;
 }
 
-.gui {
+.gui-container {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
+  bottom: 1rem;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+}
+
+.gui {
+  width: 25rem;
+  display: flex;
+  justify-content: space-around;
   z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .gui-container {
+    display: block;
+    top: 1rem;
+    left: 1rem;
+    width: 10rem;
+  }
+
+  .gui {
+    display: block;
+  }
+
+  .controls {
+    margin-top: 1rem;
+  }
+}
+
+.thumbnail,
+.controls {
+  height: 10rem;
   width: 10rem;
 }
 
 .thumbnail {
-  height: 10rem;
   border: 1px solid white;
 }
 
@@ -37,10 +66,9 @@ body {
   object-fit: fill;
 }
 
-.controls {
+.buttons {
   display: flex;
   justify-content: space-between;
-  margin-top: 1rem;
 }
 
 .refresh,
@@ -61,6 +89,11 @@ body {
 .refresh:hover,
 .upload:hover {
   background-color: #333333;
+}
+
+.refresh:active,
+.upload:active {
+  background-color: #666666;
 }
 
 .upload {

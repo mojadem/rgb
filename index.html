@@ -2,6 +2,7 @@
 <html>
   <head lang="en">
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>rgb</title>
     <link rel="stylesheet" href="style.css" />
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -13,45 +14,48 @@
       <span id="img-data"></span>
     </div>
 
-    <div class="gui">
-      <div class="thumbnail">
-        <img id="thumbnail" />
-      </div>
+    <div class="gui-container">
+      <div class="gui">
+        <div class="thumbnail">
+          <img id="thumbnail" />
+        </div>
 
-      <div class="controls">
-        <button id="refresh" class="refresh">
-          <i class="ph ph-arrow-clockwise"></i>
-        </button>
-        <label class="upload" for="upload">
-          <i class="ph ph-upload-simple"></i>
-        </label>
-        <input id="upload" type="file" accept="image/png, image/jpeg" />
+        <div class="controls">
+          <div class="buttons">
+            <button id="refresh" class="refresh">
+              <i class="ph ph-arrow-clockwise"></i>
+            </button>
+            <label class="upload" for="upload">
+              <i class="ph ph-upload-simple"></i>
+            </label>
+            <input id="upload" type="file" accept="image/png, image/jpeg" />
+          </div>
+          <input
+            id="red-slider"
+            type="range"
+            min="-0.25"
+            max="0.25"
+            step="0.01"
+            value="0.0"
+          />
+          <input
+            id="green-slider"
+            type="range"
+            min="-0.25"
+            max="0.25"
+            step="0.01"
+            value="0.0"
+          />
+          <input
+            id="blue-slider"
+            type="range"
+            min="-0.25"
+            max="0.25"
+            step="0.01"
+            value="0.0"
+          />
+        </div>
       </div>
-
-      <input
-        id="red-slider"
-        type="range"
-        min="-0.25"
-        max="0.25"
-        step="0.01"
-        value="0.0"
-      />
-      <input
-        id="green-slider"
-        type="range"
-        min="-0.25"
-        max="0.25"
-        step="0.01"
-        value="0.0"
-      />
-      <input
-        id="blue-slider"
-        type="range"
-        min="-0.25"
-        max="0.25"
-        step="0.01"
-        value="0.0"
-      />
     </div>
   </body>
 </html>

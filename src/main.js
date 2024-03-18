@@ -28,6 +28,9 @@ let INTERSECTED = null;
 /** @type {THREE.Mesh} */
 let CURRENT = null;
 
+/** @type {boolean} */
+let pointerDown = false;
+
 init();
 animate();
 
@@ -36,7 +39,7 @@ function init() {
     45,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000
+    1000,
   );
   camera.position.z = 5; // initial camera distance
 
@@ -94,9 +97,19 @@ function initEventListeners() {
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  window.addEventListener("pointerdown", updateIntersected);
-  window.addEventListener("pointermove", updateIntersected);
+  window.addEventListener("pointerdown", (event) => {
+    pointerDown = true;
+    updateIntersected(event);
+  });
+
+  window.addEventListener("pointermove", (event) => {
+    if (!pointerDown) {
+      updateIntersected(event);
+    }
+  });
+
   window.addEventListener("pointerup", (event) => {
+    pointerDown = false;
     selectIntersected();
 
     if (event.pointerType === "touch") {

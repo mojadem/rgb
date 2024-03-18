@@ -9,6 +9,12 @@
     <title>rgb</title>
     <link rel="stylesheet" href="style.css" />
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -25,10 +31,10 @@
 
         <div class="controls">
           <div class="buttons">
-            <button id="refresh" class="refresh">
+            <button id="refresh" class="btn refresh">
               <i class="ph ph-arrow-clockwise"></i>
             </button>
-            <label class="upload" for="upload">
+            <label class="btn upload" for="upload">
               <i class="ph ph-upload-simple"></i>
             </label>
             <input id="upload" type="file" accept="image/png, image/jpeg" />
@@ -59,6 +65,48 @@
           />
         </div>
       </div>
+    </div>
+
+    <button id="help" class="btn help">
+      <i id="help-icon" class="ph ph-question"></i>
+    </button>
+    <div id="help-overlay" class="help-overlay hidden">
+      <main id="help-text">
+        <h1>Matt Dembiczak</h1>
+        <h1><i>RGB</i>, 2023-2024</h1>
+        <p>HTML, CSS, JavaScript, Three.js</p>
+        <p>
+          <i>RGB</i> is an interactive exploration into how computers store and
+          interpret images as data. It is also an investigation of websites as a
+          form of digital installation. When interacting with <i>RGB</i>,
+          players are forced to think like a computer; to deconstruct digital
+          media into its pixels consisting of the only three colors computers
+          know: red, green, and blue.
+        </p>
+        <h2>Technical Process</h2>
+        <p>
+          Screens display media through pixels, individual points of light that
+          combine red, green, and blue additively to display 16,777,216 possible
+          colors. RGB examines each of these pixels in an image, comparing its
+          red, green, and blue values, or RGB values. The work features three 3D
+          panes, one corresponding to each of these colors. In each pane, every
+          pixel’s RGB values are compared. If the corresponding color is
+          dominant, then that pixel is tinted and displayed; otherwise, it is
+          transparent. Interacting with each slider adjusts the bias for its
+          corresponding color.
+        </p>
+        <h2>Interactions</h2>
+        <ul>
+          <li>Click the central image pane to toggle pane alignment.</li>
+          <li>
+            Click the outer image panes when unaligned to navigate
+            three-dimensionally.
+          </li>
+          <li>Drag the sliders to adjust the red, green, and blue bias.</li>
+          <li>Click the refresh button to receive a random image.</li>
+          <li>Click the upload button to upload an image from your device.</li>
+        </ul>
+      </main>
     </div>
   </body>
 </html>

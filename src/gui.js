@@ -46,6 +46,19 @@ function initGui() {
     tint.b = parseFloat(blueSlider.value);
     updateTint(tint);
   };
+
+  const helpButton = document.getElementById("help");
+  helpButton.onclick = () => {
+    const icon = document.getElementById("help-icon");
+    icon.classList.toggle("ph-question");
+    icon.classList.toggle("ph-x");
+
+    const overlay = document.getElementById("help-overlay");
+    overlay.classList.toggle("hidden");
+
+    const text = document.getElementById("help-text");
+    text.scrollTop = 0;
+  };
 }
 
 function resetTint() {

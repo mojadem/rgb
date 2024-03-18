@@ -1,6 +1,7 @@
 body {
   margin: 0;
   -webkit-tap-highlight-color: transparent;
+  font-family: "Inter", sans-serif;
 }
 
 .text {
@@ -64,22 +65,20 @@ body {
 .thumbnail img {
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: cover;
 }
 
 .buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
-.refresh,
-.upload {
-  padding: 0.5rem 1.25rem 0.5rem 1.25rem;
+.btn {
+  padding: 0.5rem;
   font-size: 2rem;
   background-color: black;
   color: white;
   border: 1px solid white;
-  /* border-radius: 0.5rem; */
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -88,13 +87,11 @@ body {
   transition: transform 100ms ease-out;
 }
 
-.refresh:hover,
-.upload:hover {
+.btn:hover {
   background-color: #333333;
 }
 
-.refresh:active,
-.upload:active {
+.btn:active {
   background-color: #666666;
   transform: scale(0.9);
 }
@@ -128,4 +125,33 @@ input[type="file"] {
 
 #blue-slider {
   accent-color: blue;
+}
+
+.help {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 3;
+}
+
+.help-overlay {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  padding: 1rem;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: whitesmoke;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.help-overlay main {
+  max-width: 50rem;
+  overflow-y: auto;
 }

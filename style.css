@@ -85,6 +85,7 @@ body {
   align-items: center;
   justify-content: center;
   transition: background-color 100ms ease-out;
+  transition: transform 100ms ease-out;
 }
 
 .refresh:hover,
@@ -95,6 +96,7 @@ body {
 .refresh:active,
 .upload:active {
   background-color: #666666;
+  transform: scale(0.9);
 }
 
 .upload {

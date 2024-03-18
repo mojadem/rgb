@@ -15,16 +15,13 @@ const tint = new THREE.Color(0.0, 0.0, 0.0);
 function initGui() {
   const refreshButton = document.getElementById("refresh");
   refreshButton.onclick = () => {
+    resetTint();
     getImage();
-    tint.copy(new THREE.Color(0.0, 0.0, 0.0));
-    redSlider.value = tint.r;
-    greenSlider.value = tint.g;
-    blueSlider.value = tint.b;
-    updateTint(tint);
   };
 
   const imageUpload = document.getElementById("upload");
   imageUpload.onchange = (event) => {
+    resetTint();
     const [file] = event.target.files;
     uploadImage(file);
   };
@@ -49,6 +46,14 @@ function initGui() {
     tint.b = parseFloat(blueSlider.value);
     updateTint(tint);
   };
+}
+
+function resetTint() {
+  tint.set(0.0, 0.0, 0.0);
+  redSlider.value = tint.r;
+  greenSlider.value = tint.g;
+  blueSlider.value = tint.b;
+  updateTint(tint);
 }
 
 export { initGui };

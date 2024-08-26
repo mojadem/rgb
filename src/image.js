@@ -1,6 +1,10 @@
 import * as THREE from "three";
 import { loadTexture } from "./planes";
 
+const LOADING_GIF_URL =
+  "https://64.media.tumblr.com/a94744a6a469f521d735fbe2631acb7f/tumblr_n2raoheCRZ1s33p20o1_500.gif";
+const IMAGE_URL = "https://picsum.photos/500";
+
 /**
  * @param {string} url
  */
@@ -14,9 +18,8 @@ async function apiCall(url) {
 }
 
 async function getImage() {
-  document.getElementById("thumbnail").src =
-    "https://64.media.tumblr.com/a94744a6a469f521d735fbe2631acb7f/tumblr_n2raoheCRZ1s33p20o1_500.gif";
-  const response = await apiCall("https://source.unsplash.com/random/500x500");
+  document.getElementById("thumbnail").src = LOADING_GIF_URL;
+  const response = await apiCall(IMAGE_URL);
 
   setImage(response.url);
   const blob = await response.blob();
